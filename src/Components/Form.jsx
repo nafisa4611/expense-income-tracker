@@ -32,9 +32,7 @@ export default function Form({
 
         onSubmit({ type, category, amount, date });
         setErrors({});
-        setCategory('');
-        setAmount('');
-        setDate('');
+        
     };
 
     return (

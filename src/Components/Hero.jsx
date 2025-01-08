@@ -16,13 +16,24 @@ export default function Hero() {
 
     // Handle form submission and update income/expense totals
     const handleFormSubmit = (formData) => {
-        const { type, amount } = formData;
+        const { type, category, amount, date } = formData;
         const parsedAmount = parseFloat(amount);
+        setCategory('');
+        setAmount('');
+        setDate('');
 
         if (type === 'Income') {
             setTotalIncome((prevIncome) => prevIncome + parsedAmount);
+            setIncome((prevIncomes) => [
+                ...prevIncomes,
+                { category, date, amount: parsedAmount },
+            ]);
         } else if (type === 'Expense') {
             setTotalExpense((prevExpense) => prevExpense + parsedAmount);
+            setExpenses((prevExpenses) => [
+                ...prevExpenses,
+                { category, date, amount: parsedAmount },
+            ]);
         }
     };
 
@@ -33,15 +44,10 @@ export default function Hero() {
     const handleTypeChange = () => {
         setType((prevType) => (prevType === 'Expense' ? 'Income' : 'Expense'));
     };
-    const handleCategoryChange = (e) => {
-        setCategory(e.target.value);
-    }
-    const handleAmountChange = (e) => {
-        setAmount(e.target.value);
-    }
-    const handleDateChange = (e) => {
-        setDate(e.target.value);
-    }
+    const handleCategoryChange = (e) => setCategory(e.target.value);
+    const handleAmountChange = (e) => setAmount(e.target.value);
+    const handleDateChange = (e) => setDate(e.target.value);
+
     const categories = {
         Expense: [
             'Education',
@@ -55,13 +61,12 @@ export default function Hero() {
         ],
         Income: ['Salary', 'Outsourcing', 'Bond', 'Dividend'],
     };
-    const categoryElements =
-        categories[type].map((cat, index) => (
-            <option key={index} value={cat}>
-                {cat}
-            </option>
-        ))
 
+    const categoryElements = categories[type].map((cat, index) => (
+        <option key={index} value={cat}>
+            {cat}
+        </option>
+    ));
 
     return (
         <div>
@@ -76,7 +81,7 @@ export default function Hero() {
                         categoryElements={categoryElements}
                         category={category}
                         onAmountChange={handleAmountChange}
-                        amount={amount} // Pass the current amount value
+                        amount={amount}
                         onDateChange={handleDateChange}
                         date={date}
                     />
@@ -89,12 +94,8 @@ export default function Hero() {
                             expense={totalExpense}
                         />
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-8">
-                            <Income 
-                                incomes ={incomes}
-                            />
-                            <Expense
-                               expenses={expenses}
-                            />
+                            <Income incomes={incomes} />
+                            <Expense expenses={expenses} />
                         </div>
                     </div>
                 </section>

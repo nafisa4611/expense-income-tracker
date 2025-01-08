@@ -1,20 +1,28 @@
 import React, { useState } from 'react';
+import ExpenseItem from './ExpenseItem';
 
-export default function Expense({ expenses }) {
-    const [isSortOpen, setSortOpen] = useState(false);
-    const [isFilterOpen, setFilterOpen] = useState(false);
+export default function Income({ expenses }) {
+    const [isSortOpen, setIsSortOpen] = useState(false);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-    const toggleSortMenu = () => setSortOpen(prev => !prev);
-    const toggleFilterMenu = () => setFilterOpen(prev => !prev);
+    // Toggle sort dropdown
+    const toggleSortDropdown = () => {
+        setIsSortOpen((prev) => !prev);
+        setIsFilterOpen(false); // Close filter dropdown if open
+    };
+
+    // Toggle filter dropdown
+    const toggleFilterDropdown = () => {
+        setIsFilterOpen((prev) => !prev);
+        setIsSortOpen(false); // Close sort dropdown if open
+    };
 
     return (
         <>
             <div className="border rounded-md">
                 <div className="flex items-center justify-between gap-2 bg-[#F9FAFB] py-4 px-4 rounded-md">
                     <div className="flex items-center gap-2">
-                        <div
-                            className="h-10 w-10 bg-pink-600 text-white rounded-md text-center object-center place-content-center text-base"
-                        >
+                        <div className="h-10 w-10 bg-pink-600 text-white rounded-md text-center">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="24"
@@ -22,9 +30,9 @@ export default function Expense({ expenses }) {
                                 viewBox="0 0 24 24"
                                 fill="none"
                                 stroke="currentColor"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
                                 className="mx-auto"
                             >
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -34,18 +42,22 @@ export default function Expense({ expenses }) {
                                 <path d="M3 3l18 18" />
                             </svg>
                         </div>
-
                         <div>
                             <h3 className="text-xl font-semibold leading-7 text-gray-800">Expense</h3>
                         </div>
                     </div>
+
                     <div>
+                        {/* Sorting Dropdown */}
                         <div className="relative inline-block text-left">
                             <div>
                                 <button
+                                    onClick={toggleSortDropdown}
                                     type="button"
                                     className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                    onClick={toggleSortMenu}
+                                    id="menu-button"
+                                    aria-expanded={isSortOpen ? "true" : "false"}
+                                    aria-haspopup="true"
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -71,42 +83,28 @@ export default function Expense({ expenses }) {
 
                             {isSortOpen && (
                                 <div
-                                    className="absolute z-10 mt-2 left-5 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                                    role="menu2"
-                                    aria-orientation="vertical"
-                                    aria-labelledby="menu-button2"
-                                    tabindex="-1"
+                                    className="absolute z-10 mt-2 left-0 w-40 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
                                 >
-                                    <div className="py-1" role="none">
-                                        <a
-                                            href="#"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all"
-                                            role="menuitem"
-                                            tabindex="-1"
-                                            id="menu-item-0"
-                                        >
-                                            Low to High
-                                        </a>
-                                        <a
-                                            href="#"
-                                            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-all"
-                                            role="menuitem"
-                                            tabindex="-1"
-                                            id="menu-item-0"
-                                        >
-                                            High to Low
-                                        </a>
-                                    </div>
+                                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                        Low to High
+                                    </button>
+                                    <button className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                                        High to Low
+                                    </button>
                                 </div>
                             )}
                         </div>
 
+                        {/* Filter Dropdown */}
                         <div className="relative inline-block text-left">
                             <div>
                                 <button
+                                    onClick={toggleFilterDropdown}
                                     type="button"
                                     className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-2 py-1 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
-                                    onClick={toggleFilterMenu}
+                                    id="filter-button"
+                                    aria-expanded={isFilterOpen ? "true" : "false"}
+                                    aria-haspopup="true"
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -135,14 +133,7 @@ export default function Expense({ expenses }) {
                             </div>
 
                             {isFilterOpen && (
-                                <div
-                                    className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                                    role="menu"
-                                    aria-orientation="vertical"
-                                    aria-labelledby="filter-button-2"
-                                    tabindex="-1"
-                                    id="filter-dropdown2"
-                                >
+                                <div className="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                     <div className="py-1" role="none">
                                         <label className="inline-flex items-center px-4 py-2 text-sm text-gray-700">
                                             <input
@@ -175,38 +166,17 @@ export default function Expense({ expenses }) {
                     </div>
                 </div>
 
-                <div>
+                <div className="p-4 divide-y">
                     {expenses.length === 0 ? (
-                        <p>No expenses recorded yet.</p>
+                        <p className="text-center text-gray-500">No expenses recorded yet.</p>
                     ) : (
                         expenses.map((expense, index) => (
-                            <div key={index} className="border rounded-md">
-                                <div className="flex items-center justify-between gap-2 bg-[#F9FAFB] py-4 px-4 rounded-md">
-                                    <div className="flex items-center gap-2">
-                                        <div
-                                            className="h-10 w-10 bg-pink-600 text-white rounded-md text-center object-center place-content-center text-base"
-                                        >
-                                            {/* Icon */}
-                                        </div>
-
-                                        <div>
-                                            <h3 className="text-xl font-semibold leading-7 text-gray-800">Expense</h3>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="p-4 divide-y">
-                                    <div className="flex justify-between items-center py-2">
-                                        <div>
-                                            <h3 className="text-base font-medium leading-7 text-gray-600">{expense.category}</h3>
-                                            <p className="text-xs text-gray-600">{expense.date}</p>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <p className="text-base font-semibold text-gray-600">{expense.amount}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <ExpenseItem
+                                key={index}
+                                category={expense.category}
+                                date={expense.date}
+                                amount={expense.amount}
+                            />
                         ))
                     )}
                 </div>
